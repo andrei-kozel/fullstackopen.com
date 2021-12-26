@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Button = ({ title, handleClick }) => (
   <button onClick={handleClick}>{title}</button>
@@ -17,6 +17,15 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
+  const [mostVoted, setMostVoted] = useState(null);
+
+  useEffect(() => {
+    const findMostVoted = () => {
+      setMostVoted(points.indexOf(Math.max(...points)));
+    };
+
+    findMostVoted();
+  }, [points]);
 
   const handleVote = () => {
     const tempPoints = [...points];
@@ -34,6 +43,7 @@ const App = () => {
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <div>has {points[selected]} votes</div>
 
@@ -41,6 +51,13 @@ const App = () => {
         <Button title="vote" handleClick={handleVote} />
         <Button title="next anecdote" handleClick={handleNext} />
       </div>
+      <h1>Anecdote with most votes</h1>
+      {points[mostVoted] === 0 ? null : (
+        <>
+          <div>{anecdotes[mostVoted]}</div>
+          <div>has {points[mostVoted]} votes</div>
+        </>
+      )}
     </>
   );
 };
