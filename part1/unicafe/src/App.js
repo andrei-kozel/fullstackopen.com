@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 
-const Statistic = ({}) => {
-  return;
+const Statistic = ({ title, value }) => {
+  return (
+    <p>
+      {title}: {value}
+    </p>
+  );
 };
 
 const App = () => {
@@ -22,12 +26,12 @@ const App = () => {
         <button>bad</button>
       </div>
       <h1>statistic</h1>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>all: {total}</p>
-      <p>average: {average}</p>
-      <p>positive: {positive}%</p>
+      <Statistic title="good" value={good} />
+      <Statistic title="neutral" value={neutral} />
+      <Statistic title="bad" value={bad} />
+      <Statistic title="all" value={total} />
+      <Statistic title="average" value={average} />
+      <Statistic title="positive" value={positive + "%"} />
     </div>
   );
 };
