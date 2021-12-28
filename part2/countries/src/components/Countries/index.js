@@ -1,18 +1,36 @@
+import { useState, useEffect } from "react";
 import { Country } from "../Country";
 
 export const Countries = ({ data }) => {
-  if (data.length >= 10) {
+  const [countries, setCountries] = useState(data);
+
+  useEffect(() => {
+    setCountries(data);
+  }, [data]);
+
+  const showInfo = (country) => {
+    setCountries([country]);
+  };
+
+  if (countries.length >= 10) {
     return <p>Too many macthes, specify another filter.</p>;
   }
 
-  if (data.length === 1) {
-    return <Country country={data[0]} />;
+  if (countries.length === 1) {
+    return <Country country={countries[0]} />;
   }
 
   return (
     <div>
-      {data.map((country, index) => {
-        return <p key={index}>{country.name.common}</p>;
+      {countries.map((country, index) => {
+        return (
+          <div key={index}>
+            <p>
+              {country.name.common}{" "}
+              <button onClick={() => showInfo(country)}>show</button>
+            </p>
+          </div>
+        );
       })}
     </div>
   );
