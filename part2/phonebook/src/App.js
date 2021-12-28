@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas", id: 1 }]);
+  const [persons, setPersons] = useState([
+    { name: "Arto Hellas", number: "040-1234567", id: 1 },
+  ]);
   const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
 
   const addNumber = (event) => {
     event.preventDefault();
     const personObject = {
       name: newName,
+      number: newNumber,
       id: persons.length + 1,
     };
 
@@ -16,6 +20,7 @@ const App = () => {
     } else {
       setPersons([...persons, personObject]);
       setNewName("");
+      setNewNumber("");
     }
   };
 
@@ -23,7 +28,10 @@ const App = () => {
     let result = false;
 
     persons.forEach((person) => {
-      if (person.name === personObject.name) {
+      if (
+        person.name === personObject.name &&
+        person.number === personObject.number
+      ) {
         result = true;
       }
     });
@@ -31,8 +39,11 @@ const App = () => {
     return result;
   };
 
-  const handleNewNumber = (event) => {
+  const handleNewName = (event) => {
     setNewName(event.target.value);
+  };
+  const handleNewNumber = (event) => {
+    setNewNumber(event.target.value);
   };
 
   return (
@@ -40,7 +51,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <form>
         <div>
-          name: <input value={newName} onChange={handleNewNumber} />
+          name: <input value={newName} onChange={handleNewName} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleNewNumber} />
         </div>
         <div>
           <button type="submit" onClick={addNumber}>
@@ -50,7 +64,9 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map((person) => (
-        <p key={person.id}>{person.name}</p>
+        <p key={person.id}>
+          {person.name}: {person.number}
+        </p>
       ))}
     </div>
   );
