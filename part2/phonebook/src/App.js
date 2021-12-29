@@ -11,10 +11,14 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
     phoneBookService.getAll().then((data) => {
       setPersons(data);
     });
-  }, []);
+  };
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -27,9 +31,11 @@ const App = () => {
     if (checkPersonExist(personObject)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons([...persons, personObject]);
-      setNewName("");
-      setNewNumber("");
+      phoneBookService.addPerson(personObject).then((data) => {
+        setPersons([...persons, data]);
+        setNewName("");
+        setNewNumber("");
+      });
     }
   };
 
@@ -61,6 +67,14 @@ const App = () => {
     filteredData();
   };
 
+  const handleDeletePerson = (person) => {
+    if (window.confirm("Are you shure?")) {
+      phoneBookService.deletePerson(person).then(() => {
+        fetchData();
+      });
+    }
+  };
+
   const filteredData = () => {
     if (filter.length === 0) {
       return persons;
@@ -89,7 +103,7 @@ const App = () => {
         buttonHandler={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons data={filteredData} />
+      <Persons data={filteredData} handleDeletePerson={handleDeletePerson} />
     </div>
   );
 };
