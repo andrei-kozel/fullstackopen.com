@@ -28,11 +28,25 @@ const App = () => {
       id: persons.length + 1,
     };
 
-    if (checkPersonExist(personObject)) {
-      alert(`${newName} is already added to phonebook`);
+    const personToCheck = checkPersonExist(personObject);
+
+    if (personToCheck.result) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const personToUpdate = { ...personObject, id: personToCheck.person.id };
+
+        phoneBookService.updatePerson(personToUpdate).then(() => {
+          setNewName("");
+          setNewNumber("");
+          fetchData();
+        });
+      }
     } else {
-      phoneBookService.addPerson(personObject).then((data) => {
-        setPersons([...persons, data]);
+      phoneBookService.addPerson(personObject).then(() => {
+        fetchData();
         setNewName("");
         setNewNumber("");
       });
@@ -40,14 +54,11 @@ const App = () => {
   };
 
   const checkPersonExist = (personObject) => {
-    let result = false;
+    let result = { result: false, person: null };
 
     persons.forEach((person) => {
-      if (
-        person.name === personObject.name &&
-        person.number === personObject.number
-      ) {
-        result = true;
+      if (person.name === personObject.name) {
+        result = { result: true, person: person };
       }
     });
 
