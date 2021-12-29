@@ -19,7 +19,7 @@ const deletePerson = (person) => {
 const updatePerson = (person) => {
   const request = axios
     .put(`${baseUrl}/${person.id}`, person)
-    .catch((error) => console.log(error));
+    .catch((error) => console.log("update person error", error));
   return request.then((response) => response.data);
 };
 

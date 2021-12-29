@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Filter } from "./components/Filter";
 import { PersonForm } from "./components/Personform";
 import { Persons } from "./components/Persons";
+import { Notification } from "./components/Notification";
 import phoneBookService from "./services/phonebook.js";
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -38,18 +40,59 @@ const App = () => {
       ) {
         const personToUpdate = { ...personObject, id: personToCheck.person.id };
 
-        phoneBookService.updatePerson(personToUpdate).then(() => {
-          setNewName("");
-          setNewNumber("");
-          fetchData();
-        });
+        phoneBookService
+          .updatePerson(personToUpdate)
+          .then(() => {
+            setNewName("");
+            setNewNumber("");
+            fetchData();
+          })
+          .then(() => {
+            setNotificationMessage({
+              type: "success",
+              msg: `${personToUpdate.name} successfully updated`,
+            });
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
+          })
+          .catch((error) => {
+            setNotificationMessage({
+              type: "error",
+              msg: `Can't find person to update. Probably information about ${personToUpdate.name} has already been removed from the server`,
+            });
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
+            fetchData();
+          });
       }
     } else {
-      phoneBookService.addPerson(personObject).then(() => {
-        fetchData();
-        setNewName("");
-        setNewNumber("");
-      });
+      phoneBookService
+        .addPerson(personObject)
+        .then(() => {
+          fetchData();
+          setNewName("");
+          setNewNumber("");
+        })
+        .then(() => {
+          setNotificationMessage({
+            type: "success",
+            msg: `${personObject.name} successfully added`,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setNotificationMessage({
+            type: "error",
+            msg: `Can't save person to the server`,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+        });
     }
   };
 
@@ -80,9 +123,29 @@ const App = () => {
 
   const handleDeletePerson = (person) => {
     if (window.confirm("Are you shure?")) {
-      phoneBookService.deletePerson(person).then(() => {
-        fetchData();
-      });
+      phoneBookService
+        .deletePerson(person)
+        .then(() => {
+          fetchData();
+        })
+        .then(() => {
+          setNotificationMessage({
+            type: "success",
+            msg: `${person.name} successfully deleted`,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setNotificationMessage({
+            type: "error",
+            msg: `${person.name} has been already deleted`,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+        });
     }
   };
 
@@ -104,6 +167,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter filter={filter} handler={handleFilter} />
       <h2>add a new</h2>
       <PersonForm
