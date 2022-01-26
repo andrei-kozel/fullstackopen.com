@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/notes 
+content-type: application/json
+
+{
+    "content": "Cillum elit ad nostrud in consequat et esse dolore. Duis amet sunt esse anim consectetur culpa id magna occaecat sit minim laborum. Nisi voluptate excepteur id quis. Eu consectetur eu occaecat quis minim est excepteur qui nostrud. Non nulla aliqua in aute ex eu.",
+    "important": true
+}
+
