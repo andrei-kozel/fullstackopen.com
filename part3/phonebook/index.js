@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const phonebook = [
+let phonebook = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -39,6 +39,12 @@ app.get("/info", (request, response) => {
       phonebook.length
     } people</p> <p>${new Date()}</p>`
   );
+});
+
+app.get("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const person = phonebook.find((person) => person.id === id);
+  person ? response.json(person) : response.status(404).end();
 });
 
 const PORT = 3001;
