@@ -22,6 +22,7 @@
     "testEnvironment": "node"
   },
   "devDependencies": {
-    "eslint": "^8.8.0"
+    "eslint": "^8.8.0",
+    "jest": "^27.4.7"
   }
 }
