@@ -82,6 +82,13 @@ test('that verifies if the likes property sets to the default value of 0', async
   expect(response.body[2].likes).toEqual(0)
 })
 
+test('that not possible to add posts with invalid data', async () => {
+  const newPost = {
+    url: 'https://meta.com/'
+  }
+  await api.post('/api/blogs').send(newPost).expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
