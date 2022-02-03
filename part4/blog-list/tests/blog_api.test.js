@@ -92,12 +92,31 @@ test('that not possible to add posts with invalid data', async () => {
 describe('deletion of a blog', () => {
   test('deleting of a specific blog', async () => {
     const response = await api.get('/api/blogs')
-    const noteToBeDeleted = response.body[0]
+    const blogToBeDeleted = response.body[0]
 
-    await api.delete(`/api/blogs/${noteToBeDeleted.id}`).expect(204)
+    await api.delete(`/api/blogs/${blogToBeDeleted.id}`).expect(204)
 
     const responseAfter = await api.get('/api/blogs')
     expect(responseAfter.body).toHaveLength(initialBlogs.length - 1)
+  })
+})
+
+describe('update a blog', () => {
+  test('update likes of an individual blog post', async () => {
+    const response = await api.get('/api/blogs')
+    const blogToBeUpdated = response.body[0]
+    const likesBefore = blogToBeUpdated.likes
+    blogToBeUpdated.likes++
+
+    await api
+      .put(`/api/blogs/${blogToBeUpdated.id}`)
+      .send(blogToBeUpdated)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const responseAfter = await api.get('/api/blogs')
+    const blogToBeChecked = responseAfter.body[0]
+    expect(blogToBeChecked.likes).toEqual(likesBefore + 1)
   })
 })
 
