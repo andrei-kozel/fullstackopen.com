@@ -29,21 +29,40 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
-test('blogs are returned as json', async () => {
+test('that blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
 
-test('all blogs are returned', async () => {
+test('that all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
   expect(response.body).toHaveLength(initialBlogs.length)
 })
 
-test('uniq identifier property of the blog psts is named ID', async () => {
+test('tha a uniq identifier property of the blog posts is named ID', async () => {
   const response = await api.get('/api/blogs')
   expect(response.body[0].id).toBeDefined()
+})
+
+test('that a post can be added', async () => {
+  const newPost = {
+    title: 'Test blog 3',
+    author: 'JOhn Black',
+    url: 'https://meta.com/',
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1)
 })
 
 afterAll(() => {
