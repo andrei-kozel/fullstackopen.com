@@ -65,6 +65,23 @@ test('that a post can be added', async () => {
   expect(response.body).toHaveLength(initialBlogs.length + 1)
 })
 
+test('that verifies if the likes property sets to the default value of 0', async () => {
+  const newPost = {
+    title: 'Test blog 4',
+    author: 'John Wick',
+    url: 'https://meta.com/'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  expect(response.body[2].likes).toEqual(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
