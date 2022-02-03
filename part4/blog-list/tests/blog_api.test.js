@@ -89,6 +89,18 @@ test('that not possible to add posts with invalid data', async () => {
   await api.post('/api/blogs').send(newPost).expect(400)
 })
 
+describe('deletion of a blog', () => {
+  test('deleting of a specific blog', async () => {
+    const response = await api.get('/api/blogs')
+    const noteToBeDeleted = response.body[0]
+
+    await api.delete(`/api/blogs/${noteToBeDeleted.id}`).expect(204)
+
+    const responseAfter = await api.get('/api/blogs')
+    expect(responseAfter.body).toHaveLength(initialBlogs.length - 1)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
