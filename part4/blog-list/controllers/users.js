@@ -3,20 +3,30 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.post('/', async (request, response) => {
-  const body = request.body
+  const { username, name, password } = request.body
+
+  const existingUser = await User.findOne({ username })
+  if (existingUser) {
+    return response.status(400).json({
+      error: 'username must be unique'
+    })
+  }
 
   const saltRounds = 10
-  const passwordHash = await bcrypt.hash(body.password, saltRounds)
+  const passwordHash = await bcrypt.hash(password, saltRounds)
 
   const user = new User({
-    username: body.username,
-    name: body.name,
+    username: username,
+    name: name,
     passwordHash
   })
 
-  const savedUser = await user.save()
-
-  response.json(savedUser)
+  if (username.length >= 3 || password >= 3) {
+    const savedUser = await user.save()
+    response.json(savedUser)
+  } else {
+    response.status(400).end()
+  }
 })
 
 usersRouter.get('/', async (request, response) => {
