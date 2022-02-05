@@ -9,5 +9,6 @@ Content-Type: application/json
   "title": "9 HIGHLY CLICHED BUT STILL BRILLIANT BOOKS FOR BACKPACKERS", 
   "author": "Sarah Edwards",
   "url":"https://www.natravelblog.com/9-highly-cliched-but-still-brilliant-books-for-backpackers/",
-  "likes": 100
+  "likes": 100,
+  "userId": "61fd7c943017b5bbaa57ac1f"
 }
