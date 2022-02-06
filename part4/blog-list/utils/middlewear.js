@@ -33,12 +33,14 @@ const errorHandler = (error, request, response, next) => {
 }
 
 const tokenExtractor = (request, response, next) => {
-  const token = request.get('authorization').substring(7)
+  if (request.get('authorization')) {
+    let token = request.get('authorization').substring(7)
 
-  if (token && token.split('.').length == 3) {
-    response.token = token
-  } else {
-    return response.status(401).json({ error: 'token missing or invalid' })
+    if (token && token.split('.').length == 3) {
+      response.token = token
+    } else {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
   }
   next()
 }

@@ -40,3 +40,14 @@ Authorization: bearer wrong-fotmatted-token
   "likes": 100,
   "userId": "61fd7c943017b5bbaa57ac1f"
 }
+
+
+### 
+DELETE  http://localhost:3001/api/blogs/61ff95899b5e937de9168eac HTTP/1.1
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2MWZkN2M5NDMwMTdiNWJiYWE1N2FjMWYiLCJpYXQiOjE2NDQwOTEyNTJ9.Dn0UTX5cYeBXYWScPJWwdLnmzrXzwXOi2kynD402cgU
+
+### 
+DELETE  http://localhost:3001/api/blogs/61ff95899b5e937de9168eac HTTP/1.1
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vZGVyIiwiaWQiOiI2MWZmOTkzMWZhOTEzZmZhMzBlZjc1YWYiLCJpYXQiOjE2NDQxNDA4NzYsImV4cCI6MTY0NDE0NDQ3Nn0.mIIUCLvRVw8TFI762u6WFuKz1zoVwW4yUt5HewFmKQI
