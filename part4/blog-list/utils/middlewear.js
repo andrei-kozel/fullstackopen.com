@@ -32,8 +32,20 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+const tokenExtractor = (request, response, next) => {
+  const token = request.get('authorization').substring(7)
+
+  if (token && token.split('.').length == 3) {
+    response.token = token
+  } else {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }
