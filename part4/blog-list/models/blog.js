@@ -1,25 +1,10 @@
 const mongoose = require('mongoose')
 
-const blogSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    minlength: 10
-  },
-  author: {
-    type: String,
-    required: true,
-    minlength: 5
-  },
-  url: {
-    type: String,
-    required: true,
-    minlength: 5
-  },
-  likes: {
-    type: Number,
-    default: 0
-  },
+const blogSchema = mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
