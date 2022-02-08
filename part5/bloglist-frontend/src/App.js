@@ -11,6 +11,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -35,8 +36,15 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setNotification(`${user.name} welcome!`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     } catch (exception) {
-      console.log(exception)
+      setNotification(exception.response.data.error)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
@@ -48,8 +56,18 @@ const App = () => {
         author,
         url
       }
-      blogService.create(post)
-    } catch (exception) {}
+      await blogService.create(post)
+      setNotification(`post was added`)
+      blogService.getAll().then((blogs) => setBlogs(blogs))
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } catch (exception) {
+      setNotification(exception.response.data.error)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
   }
 
   const loginForm = () => (
@@ -117,6 +135,7 @@ const App = () => {
 
   return (
     <div>
+      {notification ?? notification}
       <h2>blogs</h2>
       {user === null ? (
         loginForm()
