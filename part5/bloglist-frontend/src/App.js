@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import NewPostForm from './components/NewPostform'
+import NewPostForm from './components/NewPostForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -14,7 +15,6 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -53,6 +53,7 @@ const App = () => {
 
   const handleCreateNewPost = async (event) => {
     event.preventDefault()
+
     try {
       const post = {
         title,
@@ -62,6 +63,9 @@ const App = () => {
       await blogService.create(post)
       setNotification(`post was added`)
       blogService.getAll().then((blogs) => setBlogs(blogs))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
       setTimeout(() => {
         setNotification(null)
       }, 5000)
@@ -73,39 +77,30 @@ const App = () => {
     }
   }
 
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
+  const loginForm = () => (
+    <Togglable buttonLabel="log in">
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </Togglable>
+  )
 
   const newPostForm = () => (
-    <NewPostForm
-      title={title}
-      author={author}
-      url={url}
-      handleTitleChange={({ target }) => setTitle(target.value)}
-      handleAuthorChanfge={({ target }) => setAuthor(target.value)}
-      handleUrlChanfge={({ target }) => setUrl(target.value)}
-      handleCreateNewPost={handleCreateNewPost}
-    />
+    <Togglable buttonLabel="create blog">
+      <NewPostForm
+        title={title}
+        author={author}
+        url={url}
+        handleTitleChange={({ target }) => setTitle(target.value)}
+        handleAuthorChange={({ target }) => setAuthor(target.value)}
+        handleUrlChange={({ target }) => setUrl(target.value)}
+        handleCreateNewPost={handleCreateNewPost}
+      />
+    </Togglable>
   )
 
   return (
@@ -116,12 +111,10 @@ const App = () => {
         loginForm()
       ) : (
         <div>
-          <p>{user.name} logged</p>
-
+          {user.name} logged
           <button type="submit" onClick={() => window.localStorage.clear()}>
             log out
           </button>
-
           {newPostForm()}
         </div>
       )}
