@@ -8,12 +8,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
@@ -29,16 +24,12 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
+  const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
       setNotification(`${user.name} welcome!`)
       setTimeout(() => {
         setNotification(null)
@@ -51,21 +42,12 @@ const App = () => {
     }
   }
 
-  const handleCreateNewPost = async (event) => {
-    event.preventDefault()
-
+  const handleCreateNewPost = async (post) => {
     try {
-      const post = {
-        title,
-        author,
-        url
-      }
       await blogService.create(post)
       setNotification(`post was added`)
-      blogService.getAll().then((blogs) => setBlogs(blogs))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      const result = await blogService.getAll()
+      setBlogs(result)
       setTimeout(() => {
         setNotification(null)
       }, 5000)
@@ -77,29 +59,53 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (blog) => {
+    try {
+      await blogService.remove(blog.id)
+      setNotification(`post was deleted`)
+      const result = await blogService.getAll()
+      setBlogs(result)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } catch (exception) {
+      setNotification(exception.response.data.error)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
+  const handleLike = async (blog) => {
+    try {
+      let newLikes = blog.likes + 1
+      const updatedPost = {
+        user: blog.user.id,
+        likes: newLikes,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url
+      }
+      await blogService.update(blog.id, updatedPost)
+      const result = await blogService.getAll()
+      setBlogs(result)
+    } catch (exception) {
+      setNotification(exception.response.data.error)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const loginForm = () => (
     <Togglable buttonLabel="log in">
-      <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => setUsername(target.value)}
-        handlePasswordChange={({ target }) => setPassword(target.value)}
-        handleSubmit={handleLogin}
-      />
+      <LoginForm handleSubmit={handleLogin} />
     </Togglable>
   )
 
   const newPostForm = () => (
     <Togglable buttonLabel="create blog">
-      <NewPostForm
-        title={title}
-        author={author}
-        url={url}
-        handleTitleChange={({ target }) => setTitle(target.value)}
-        handleAuthorChange={({ target }) => setAuthor(target.value)}
-        handleUrlChange={({ target }) => setUrl(target.value)}
-        handleCreateNewPost={handleCreateNewPost}
-      />
+      <NewPostForm handleCreateNewPost={handleCreateNewPost} />
     </Togglable>
   )
 
@@ -118,9 +124,17 @@ const App = () => {
           {newPostForm()}
         </div>
       )}
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      {blogs
+        .sort((a, b) => a - b)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            blogService={blogService}
+            handleDelete={handleDelete}
+            handleLike={handleLike}
+          />
+        ))}
     </div>
   )
 }

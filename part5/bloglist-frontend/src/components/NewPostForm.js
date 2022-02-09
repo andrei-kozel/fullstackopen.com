@@ -1,25 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const NewPostForm = ({
-  title,
-  author,
-  url,
-  handleTitleChange,
-  handleAuthorChange,
-  handleUrlChange,
-  handleCreateNewPost
-}) => {
+const NewPostForm = ({ handleCreateNewPost }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addPost = (event) => {
+    event.preventDefault()
+    handleCreateNewPost({ title, author, url })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   return (
     <div>
       <h2>Create new poost: </h2>
-      <form onSubmit={handleCreateNewPost}>
+      <form onSubmit={addPost}>
         <div>
           title
           <input
             type="text"
             value={title}
             name="Title"
-            onChange={handleTitleChange}
+            onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
@@ -28,7 +33,7 @@ const NewPostForm = ({
             type="text"
             value={author}
             name="Author"
-            onChange={handleAuthorChange}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
@@ -37,7 +42,7 @@ const NewPostForm = ({
             type="text"
             value={url}
             name="Url"
-            onChange={handleUrlChange}
+            onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <button type="submit">add new post</button>
