@@ -45,7 +45,7 @@ const App = () => {
   const handleCreateNewPost = async (post) => {
     try {
       await blogService.create(post)
-      setNotification(`post was added`)
+      setNotification('post was added')
       const result = await blogService.getAll()
       setBlogs(result)
       setTimeout(() => {
@@ -62,7 +62,7 @@ const App = () => {
   const handleDelete = async (blog) => {
     try {
       await blogService.remove(blog.id)
-      setNotification(`post was deleted`)
+      setNotification('post was deleted')
       const result = await blogService.getAll()
       setBlogs(result)
       setTimeout(() => {
@@ -111,7 +111,7 @@ const App = () => {
 
   return (
     <div>
-      {notification ?? notification}
+      {notification ? notification : null}
       <h2>blogs</h2>
       {user === null ? (
         loginForm()
