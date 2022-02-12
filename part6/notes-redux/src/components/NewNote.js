@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { createNote } from '../reducers/noteReducer'
 import { useDispatch } from 'react-redux'
-import noteService from '../services/notes'
 
 const NewNote = () => {
   const [note, setNote] = useState('')
@@ -9,8 +8,7 @@ const NewNote = () => {
 
   const addNote = async (event) => {
     event.preventDefault()
-    const newNote = await noteService.createNew(note)
-    dispatch(createNote(newNote))
+    dispatch(createNote(note))
     setNote('')
   }
 

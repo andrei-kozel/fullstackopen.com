@@ -11,29 +11,9 @@
       "id": 2
     },
     {
-      "content": "sdf",
+      "content": "test the app",
       "important": false,
       "id": 3
-    },
-    {
-      "content": "asdasd",
-      "important": false,
-      "id": 4
-    },
-    {
-      "content": "test",
-      "important": false,
-      "id": 5
-    },
-    {
-      "content": "1212",
-      "important": false,
-      "id": 6
-    },
-    {
-      "content": "asd",
-      "important": false,
-      "id": 7
     }
   ]
 }
