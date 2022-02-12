@@ -1,4 +1,4 @@
-const notes = [
+const initialState = [
   {
     content: 'the app state is in redux store',
     important: true,
@@ -11,7 +11,7 @@ const notes = [
   }
 ]
 
-export const noteReducer = (state = notes, action) => {
+export const noteReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'NEW_NOTE':
       return [...state, action.data]
