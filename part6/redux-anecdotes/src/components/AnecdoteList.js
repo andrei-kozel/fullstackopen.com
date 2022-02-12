@@ -19,7 +19,6 @@ const Anecdote = ({ anecdote, handleClick }) => {
 }
 
 const AnecdoteList = () => {
-  // TODO sort by votes
   const anecdotes = useSelector((state) =>
     state.anecdotes.filter((anecdote) =>
       state.filter !== ''
@@ -31,7 +30,7 @@ const AnecdoteList = () => {
 
   const vote = (anecdote) => {
     dispatch(voteUp(anecdote.id))
-    dispatch(setNotification(`you voted '${anecdote.content}'`))
+    dispatch(setNotification(`you voted '${anecdote.content}'`), 10)
     setTimeout(() => {
       dispatch(clearNotification())
     }, 5000)
