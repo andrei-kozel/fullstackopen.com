@@ -5,20 +5,20 @@ import LoginForm from './components/LoginForm'
 import NewPostForm from './components/NewPostForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import {
   createBlog,
   fetchBlogs,
   deleteBlog,
   likeBlog
 } from './store/reducers/blogsReducer'
+import { loginUser } from './store/reducers/userReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  const [notification] = useState(null)
 
-  const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogsReducer.blogs)
+  const user = useSelector((state) => state.userReducer.user)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(fetchBlogs())
@@ -28,27 +28,12 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
 
   const handleLogin = async ({ username, password }) => {
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setNotification(`${user.name} welcome!`)
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-    } catch (exception) {
-      setNotification(exception.response.data.error)
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-    }
+    dispatch(loginUser({ username, password }))
   }
 
   const handleCreateBlog = async (post) => {

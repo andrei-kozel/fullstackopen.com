@@ -3,11 +3,11 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { createStore } from 'redux'
 import thunk from 'redux-thunk'
 import { blogsReducer } from './reducers/blogsReducer'
-import { usersReducer } from './reducers/usersReducer'
+import { userReducer } from './reducers/userReducer'
 
 const rootReducer = combineReducers({
   blogsReducer,
-  usersReducer
+  userReducer
 })
 
 export default createStore(
