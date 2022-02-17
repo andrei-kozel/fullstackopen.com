@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
+import Button from 'react-bootstrap/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import NewPostForm from './components/NewPostForm'
-import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import {
   createBlog,
   fetchBlogs,
   deleteBlog,
   likeBlog
-} from './store/reducers/blogsReducer'
-import { loginUser } from './store/reducers/userReducer'
+} from './store/actions/blogActions'
+import { loginUser, loadUser, logoutUser } from './store/actions/userActions'
 
 const App = () => {
-  const [notification] = useState(null)
-
+  const notification = useSelector((state) => state.notificationReducer)
   const blogs = useSelector((state) => state.blogsReducer.blogs)
   const user = useSelector((state) => state.userReducer.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(fetchBlogs())
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      blogService.setToken(user.token)
-    }
+    dispatch(loadUser())
   }, [])
 
   const handleLogin = async ({ username, password }) => {
@@ -45,34 +37,26 @@ const App = () => {
   }
 
   const handleLike = async (blog) => {
-    let newLikes = blog.likes + 1
-    const updatedPost = {
-      user: blog.user.id,
-      likes: newLikes,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-    dispatch(likeBlog(blog.id, updatedPost))
+    dispatch(likeBlog(blog))
+  }
+
+  const handleLogOut = () => {
+    dispatch(logoutUser())
   }
 
   return (
     <div>
       {notification ? notification : null}
-      <h2>blogs</h2>
+      <h1>My blogs app</h1>
       {user === null ? (
-        <Togglable buttonLabel="log in">
-          <LoginForm handleSubmit={handleLogin} />
-        </Togglable>
+        <LoginForm handleSubmit={handleLogin} />
       ) : (
         <div>
           {user.name} logged
-          <button type="submit" onClick={() => window.localStorage.clear()}>
+          <Button variant="primary" type="submit" onClick={handleLogOut}>
             log out
-          </button>
-          <Togglable buttonLabel="create blog">
-            <NewPostForm handleCreateNewPost={handleCreateBlog} />
-          </Togglable>
+          </Button>
+          <NewPostForm handleCreateNewPost={handleCreateBlog} />
         </div>
       )}
       {blogs.map((blog) => (

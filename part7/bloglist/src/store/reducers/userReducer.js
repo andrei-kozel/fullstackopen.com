@@ -1,8 +1,5 @@
-import loginService from '../../services/login'
-import blogService from '../../services/blogs'
-
 const initialState = {
-  user: {}
+  user: null
 }
 
 export const userReducer = (state = initialState, action) => {
@@ -10,20 +7,10 @@ export const userReducer = (state = initialState, action) => {
     case 'GET_USER':
       return state.blogs
     case 'LOGIN_USER':
-      return { ...state, users: action.data }
+      return { ...state, user: action.data }
+    case 'LOGOUT_USER':
+      return { ...state, user: null }
     default:
       return state
-  }
-}
-
-export const loginUser = ({ username, password }) => {
-  return async (dispatch) => {
-    const user = await loginService.login({ username, password })
-    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-    blogService.setToken(user.token)
-    dispatch({
-      type: 'LOGIN_USER',
-      data: user
-    })
   }
 }

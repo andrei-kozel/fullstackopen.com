@@ -1,5 +1,3 @@
-import blogService from '../../services/blogs'
-
 const initialState = {
   blogs: []
 }
@@ -19,46 +17,5 @@ export const blogsReducer = (state = initialState, action) => {
       return { ...state, blogs: action.data }
     default:
       return state
-  }
-}
-
-export const fetchBlogs = () => {
-  return async (dispatch) => {
-    const response = await blogService.getAll()
-    dispatch({
-      type: 'FETCH_BLOGS',
-      data: response
-    })
-  }
-}
-
-export const createBlog = (blog) => {
-  return async (dispatch) => {
-    const response = await blogService.create(blog)
-    dispatch({
-      type: 'CREATE_BLOG',
-      data: response
-    })
-  }
-}
-
-export const deleteBlog = (id) => {
-  return async (dispatch) => {
-    await blogService.remove(id)
-    dispatch({
-      type: 'DELETE_BLOG',
-      data: id
-    })
-  }
-}
-
-export const likeBlog = (id, blog) => {
-  return async (dispatch) => {
-    await blogService.update(id, blog)
-    const response = await blogService.getAll()
-    dispatch({
-      type: 'LIKE_BLOG',
-      data: response
-    })
   }
 }

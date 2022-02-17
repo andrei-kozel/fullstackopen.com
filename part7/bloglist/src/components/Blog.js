@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Col, Row } from 'react-bootstrap'
+import Button from 'react-bootstrap/Button'
 
 const Blog = ({ blog, handleDelete, handleLike }) => {
   const [visible, setyVisible] = useState(false)
@@ -17,19 +19,27 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
 
   return (
     <div className="blog" style={blogStyle}>
-      <div>
-        {blog.title} {blog.author}
-        <button onClick={handleVisibility}>{!visible ? 'view' : 'hide'}</button>
-      </div>
+      <Row>
+        <Col xs={10} md={10}>
+          {blog.title} {blog.author}
+        </Col>
+        <Col xs={2} md={2}>
+          <Button onClick={handleVisibility}>
+            {!visible ? 'view' : 'hide'}
+          </Button>
+        </Col>
+      </Row>
       {!visible ? null : (
         <div>
           <div>url: {blog.url}</div>
           <div>
             likes: {blog.likes}{' '}
-            <button onClick={() => handleLike(blog)}>like</button>
+            <Button onClick={() => handleLike(blog)}>like</Button>
           </div>
           <div>{blog.author}</div>
-          <button onClick={() => handleDelete(blog.id)}>delete</button>
+          <Button variant="danger" onClick={() => handleDelete(blog.id)}>
+            delete
+          </Button>
         </div>
       )}
     </div>
