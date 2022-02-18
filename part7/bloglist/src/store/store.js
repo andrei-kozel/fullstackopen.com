@@ -9,8 +9,8 @@ import { usersReducer } from './reducers/usersReducer'
 
 const rootReducer = combineReducers({
   blogsReducer,
-  userReducer,
   notificationReducer,
+  userReducer,
   usersReducer
 })
 
