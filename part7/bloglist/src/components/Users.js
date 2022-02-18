@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers } from '../store/actions/usersActions'
 import { Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -28,7 +29,12 @@ const Users = () => {
             <tr key={user.id}>
               <td>{index + 1}</td>
               <td>{user.name}</td>
-              <td>{user.blogs.length}</td>
+              <td>
+                {user.blogs.length}{' '}
+                <Link to={`/users/${user.id}`} state={user}>
+                  Show all blogs
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

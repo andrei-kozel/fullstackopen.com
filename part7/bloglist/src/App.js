@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import Blog from './components/Blog'
 import Main from './components/Main'
 import Navigation from './components/Navigation'
+import User from './components/User'
 import Users from './components/Users'
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User />} />
           <Route path="/blogs/:id" element={<Blog />} />
         </Routes>
       </Container>
