@@ -14,7 +14,7 @@ export const fetchBlogs = () => {
     } catch (err) {
       dispatch({
         type: 'SET_NOTIFICATION',
-        data: err.response.data.error
+        data: { message: err.response.data.error, type: 'danger' }
       })
       setTimeout(() => {
         dispatch({ type: 'CLEAR_NOTIFICATION' })
@@ -33,7 +33,7 @@ export const createBlog = (blog) => {
       })
       dispatch({
         type: 'SET_NOTIFICATION',
-        data: 'Blog was added!'
+        data: { message: 'Blog created!', type: 'success' }
       })
       setTimeout(() => {
         dispatch({ type: 'CLEAR_NOTIFICATION' })
@@ -41,7 +41,7 @@ export const createBlog = (blog) => {
     } catch (err) {
       dispatch({
         type: 'SET_NOTIFICATION',
-        data: err.response.data.error
+        data: { message: err.response.data.error, type: 'danger' }
       })
       setTimeout(() => {
         dispatch({ type: 'CLEAR_NOTIFICATION' })
@@ -60,7 +60,7 @@ export const deleteBlog = (id) => {
       })
       dispatch({
         type: 'SET_NOTIFICATION',
-        data: 'Blog was deleted!'
+        data: { message: 'Blog deleted!', type: 'success' }
       })
       setTimeout(() => {
         dispatch({ type: 'CLEAR_NOTIFICATION' })
@@ -68,7 +68,7 @@ export const deleteBlog = (id) => {
     } catch (err) {
       dispatch({
         type: 'SET_NOTIFICATION',
-        data: err.response.data.error
+        data: { message: err.response.data.error, type: 'danger' }
       })
       setTimeout(() => {
         dispatch({ type: 'CLEAR_NOTIFICATION' })
@@ -92,6 +92,50 @@ export const likeBlog = (blog) => {
       const response = await blogService.getAll()
       dispatch({
         type: 'LIKE_BLOG',
+        data: response
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
+export const dislikeBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      let newLikes = blog.likes - 1
+      const updatedPost = {
+        user: blog.user.id,
+        likes: newLikes,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url
+      }
+      await blogService.update(blog.id, updatedPost)
+      const response = await blogService.getAll()
+      dispatch({
+        type: 'DISLIKE_BLOG',
+        data: response
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
+export const commentBlog = (id, comment) => {
+  return async (dispatch) => {
+    try {
+      const blog = await blogService.getOne(id)
+      const updatedPost = {
+        ...blog,
+        comments: [...blog.comments, comment],
+        user: blog.user.id
+      }
+      await blogService.comment(id, updatedPost)
+      const response = await blogService.getAll()
+      dispatch({
+        type: 'COMMENT_BLOG',
         data: response
       })
     } catch (err) {

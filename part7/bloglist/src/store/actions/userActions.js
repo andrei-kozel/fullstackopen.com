@@ -11,10 +11,14 @@ export const loginUser = ({ username, password }) => {
         type: 'LOGIN_USER',
         data: user
       })
+      dispatch({
+        type: 'SET_NOTIFICATION',
+        data: { message: 'Logged in!', type: 'success' }
+      })
     } catch (err) {
       dispatch({
         type: 'SET_NOTIFICATION',
-        data: err.response.data.error
+        data: { message: err.response.data.error, type: 'danger' }
       })
       setTimeout(() => {
         dispatch({ type: 'CLEAR_NOTIFICATION' })
@@ -33,6 +37,10 @@ export const loadUser = () => {
         dispatch({
           type: 'LOGIN_USER',
           data: user
+        })
+        dispatch({
+          type: 'SET_NOTIFICATION',
+          data: { message: 'Welcome!', type: 'success' }
         })
       }
     } catch (err) {

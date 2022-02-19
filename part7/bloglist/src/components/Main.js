@@ -1,17 +1,11 @@
 import React, { useEffect } from 'react'
-import Button from 'react-bootstrap/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './Blog'
-import LoginForm from './LoginForm'
 import NewPostForm from './NewPostForm'
 import blogService from '../services/blogs'
-import {
-  createBlog,
-  fetchBlogs,
-  deleteBlog,
-  likeBlog
-} from '../store/actions/blogActions'
-import { loginUser, loadUser, logoutUser } from '../store/actions/userActions'
+import { createBlog, fetchBlogs } from '../store/actions/blogActions'
+import Notification from './Notification'
+import { Col, Row } from 'react-bootstrap'
 
 const Main = () => {
   const notification = useSelector((state) => state.notificationReducer)
@@ -21,50 +15,29 @@ const Main = () => {
 
   useEffect(() => {
     dispatch(fetchBlogs())
-    dispatch(loadUser())
   }, [])
-  const handleLogin = async ({ username, password }) => {
-    dispatch(loginUser({ username, password }))
-  }
 
   const handleCreateBlog = async (post) => {
     dispatch(createBlog(post))
   }
 
-  const handleDeleteBlog = async (id) => {
-    dispatch(deleteBlog(id))
-  }
-
-  const handleLike = async (blog) => {
-    dispatch(likeBlog(blog))
-  }
-
-  const handleLogOut = () => {
-    dispatch(logoutUser())
-  }
   return (
     <div>
-      {notification ? notification : null}
-      <h1>My blogs app</h1>
-      {user === null ? (
-        <LoginForm handleSubmit={handleLogin} />
-      ) : (
-        <div>
-          {user.name} logged
-          <Button variant="primary" type="submit" onClick={handleLogOut}>
-            log out
-          </Button>
-          <NewPostForm handleCreateNewPost={handleCreateBlog} />
-        </div>
-      )}
+      {notification && <Notification notification={notification} />}
+      <Row className="align-items-center">
+        <Col sm={10}>
+          <h1>My blogs app</h1>
+        </Col>
+        <Col sm={2} className="d-flex justify-content-end">
+          {user && (
+            <div>
+              <NewPostForm handleCreateNewPost={handleCreateBlog} />
+            </div>
+          )}
+        </Col>
+      </Row>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          blogService={blogService}
-          handleDelete={handleDeleteBlog}
-          handleLike={handleLike}
-        />
+        <Blog key={blog.id} blog={blog} blogService={blogService} />
       ))}
     </div>
   )

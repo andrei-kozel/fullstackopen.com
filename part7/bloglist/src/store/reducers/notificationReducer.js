@@ -1,4 +1,7 @@
-const initialState = ''
+const initialState = {
+  message: '',
+  type: ''
+}
 
 export const notificationReducer = (state = initialState, action) => {
   switch (action.type) {

@@ -15,6 +15,10 @@ export const blogsReducer = (state = initialState, action) => {
       }
     case 'LIKE_BLOG':
       return { ...state, blogs: action.data }
+    case 'DISLIKE_BLOG':
+      return { ...state, blogs: action.data }
+    case 'COMMENT_BLOG':
+      return { ...state, blogs: action.data }
     default:
       return state
   }
