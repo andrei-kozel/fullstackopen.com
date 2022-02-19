@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1644518074402" clover="3.2.0">
+  <project timestamp="1644518074402" name="All files">
+    <metrics statements="8" coveredstatements="5" conditionals="4" coveredconditionals="2" methods="4" coveredmethods="1" elements="16" coveredelements="8" complexity="0" loc="8" ncloc="8" packages="1" files="1" classes="1"/>
+    <file name="Blog.js" path="F:\Development\react\fullstackopen.com\part5\bloglist-frontend\src\components\Blog.js">
+      <metrics statements="8" coveredstatements="5" conditionals="4" coveredconditionals="2" methods="4" coveredmethods="1"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="0" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="29" count="0" type="stmt"/>
+      <line num="32" count="0" type="stmt"/>
+    </file>
+  </project>
+</coverage>
