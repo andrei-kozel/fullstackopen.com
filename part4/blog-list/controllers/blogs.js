@@ -8,6 +8,14 @@ blogsRouter.get('', async (request, response) => {
   response.json(blogs)
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1
+  })
+  response.json(blog)
+})
+
 blogsRouter.post('/', async (request, response) => {
   const blog = new Blog(request.body)
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -58,6 +66,15 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
+  const blog = request.body
+
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true
+  })
+  response.json(updatedBlog.toJSON())
+})
+
+blogsRouter.put('/:id/comments', async (request, response) => {
   const blog = request.body
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
