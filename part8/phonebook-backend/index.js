@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 
 let persons = [
@@ -62,7 +62,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     personCount: () => persons.length,
-    allPersons: (args) => {
+    allPersons: (root, args) => {
       if (!args.phone) {
         return persons
       }
@@ -93,7 +93,9 @@ const resolvers = {
     },
     editNumber: (root, args) => {
       const person = persons.find((p) => p.name === args.name)
-      if (!person) null
+      if (!person) {
+        return null
+      }
 
       const updatedPerson = { ...person, phone: args.phone }
       persons = persons.map((p) => (p.name === args.name ? updatedPerson : p))
