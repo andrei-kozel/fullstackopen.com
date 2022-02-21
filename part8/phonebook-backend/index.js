@@ -1,10 +1,12 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const Person = require('./models/person')
+require('dotenv').config()
 
-const MONGO_DB_URL =
-  'mongodb+srv://husky_dusky:3134319Bexa@cluster0.5edqh.mongodb.net/phonebook-gql?retryWrites=true&w=majority'
+const MONGO_DB_URL = process.env.DB_URL
+const JWT_SECRET = process.env.JWT_SECRET
 
 console.log('connecting to ', MONGO_DB_URL, {
   useNewUrlParser: true,
@@ -40,10 +42,21 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    friends: [Person!]!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     personCount: Int!
     allPersons(phone: YesNo): [Person!]!
     findPerson(name: String!): Person
+    me: User
   }
 
   type Mutation {
@@ -54,20 +67,23 @@ const typeDefs = gql`
       city: String!
     ): Person
     editNumber(name: String!, phone: String!): Person
+    createUser(username: String!): User
+    login(username: String!, password: String!): Token
   }
 `
 
 const resolvers = {
   Query: {
     personCount: async () => Person.collection.countDocuments(),
-    allPersons: (root, args) => {
+    allPersons: async (root, args) => {
       // if (!args.phone) {
       //   return persons
       // }
       // const byPhone = (person) =>
       //   args.phone === 'YES' ? person.phone : !person.phone
       // return persons.filter(byPhone)
-      return Person.find({})
+      const persons = await Person.find({})
+      return persons
     },
     findPerson: async (root, args) => Person.findOne({ name: args.name })
   },
@@ -80,19 +96,52 @@ const resolvers = {
     }
   },
   Mutation: {
-    addPerson: (root, args) => {
-      if (persons.find((p) => p.name === args.name)) {
-        throw new UserInputError('Person with this name already exists', {
+    addPerson: async (root, args) => {
+      const person = new Person({ ...args })
+
+      try {
+        await person.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
           invalidArgs: args.name
         })
       }
-      const person = new Person({ ...args })
-      return person.save()
+
+      return person
     },
     editNumber: async (root, args) => {
       const person = await Person.findOne({ name: args.name })
       person.phone = args.phone
-      return person.save()
+      try {
+        await person.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args.name
+        })
+      }
+      return person
+    },
+    createUser: async (root, args) => {
+      const user = new User({ username: args.username })
+
+      return user.save().catch((error) => {
+        throw new UserInputError(error.message, {
+          invalidArgs: args.name
+        })
+      })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+      if (!user || args.password !== 'secret') {
+        throw UserInputError('wrong credentials')
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id
+      }
+
+      return { value: jwt.sign(userForToken, JWT_SECRET) }
     }
   }
 }
