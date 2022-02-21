@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EDIT_BIRTHDAY, GET_AUTHORS } from '../queries'
 
 const BirthdayForm = () => {
@@ -15,6 +15,10 @@ const BirthdayForm = () => {
   })
   const authors = useQuery(GET_AUTHORS).data.allAuthors
 
+  useEffect(() => {
+    setAuthor({ ...authors[0] })
+  }, [authors])
+
   const submit = async (event) => {
     event.preventDefault()
 
@@ -26,20 +30,22 @@ const BirthdayForm = () => {
     })
   }
 
-  const handleChange = (event) => {}
-
   return (
     <div>
       <h2>Edit bithday</h2>
 
-      <form value={author.name} onSubmit={submit}>
+      <form onSubmit={submit}>
         <select
           value={author.name}
           onChange={({ target }) =>
-            setAuthor({ ...author, name: target.value })
+            setAuthor({
+              ...author,
+              name: target.value,
+              born: authors.find((a) => a.name === target.value).born
+            })
           }>
           {authors.map((a, i) => (
-            <option key={i} value={a.name}>
+            <option key={i} value={a.name || 0}>
               {a.name}
             </option>
           ))}
@@ -47,7 +53,7 @@ const BirthdayForm = () => {
         <div>
           born{' '}
           <input
-            value={author.born}
+            value={author.born || ''}
             onChange={({ target }) =>
               setAuthor({ ...author, born: Number(target.value) })
             }
