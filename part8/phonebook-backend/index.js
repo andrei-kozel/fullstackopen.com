@@ -8,6 +8,7 @@ const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const Person = require('./models/person')
+const User = require('./models/user')
 require('dotenv').config()
 
 const MONGO_DB_URL = process.env.DB_URL
@@ -91,7 +92,10 @@ const resolvers = {
       const persons = await Person.find({})
       return persons
     },
-    findPerson: async (root, args) => Person.findOne({ name: args.name })
+    findPerson: async (root, args) => Person.findOne({ name: args.name }),
+    me: (root, args, context) => {
+      return context.currentUser
+    }
   },
   Person: {
     address: (root) => {
@@ -145,9 +149,10 @@ const resolvers = {
       })
     },
     login: async (root, args) => {
-      const user = await User.findOne({ username: args.username })
+      const user = await User.findOne({ name: args.username })
+
       if (!user || args.password !== 'secret') {
-        throw UserInputError('wrong credentials')
+        throw new UserInputError('wrong credentials')
       }
 
       const userForToken = {
@@ -156,9 +161,6 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
-    },
-    me: (root, args, context) => {
-      return context.currentUser
     },
     addAsFriend: async (root, args, { currentUser }) => {
       const nonFriendAlready = (person) =>

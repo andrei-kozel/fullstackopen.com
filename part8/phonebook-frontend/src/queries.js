@@ -9,9 +9,15 @@ export const ALL_PERSONS = gql`
     }
   }
 `
-export const FIND_PERSON = gql`
-  query findPersonByName($nameToSearch: String!) {
-    findPerson(name: $nameToSearch) {
+
+export const CREATE_PERSON = gql`
+  mutation createPerson(
+    $name: String!
+    $street: String!
+    $city: String!
+    $phone: String
+  ) {
+    addPerson(name: $name, street: $street, city: $city, phone: $phone) {
       name
       phone
       id
@@ -23,14 +29,9 @@ export const FIND_PERSON = gql`
   }
 `
 
-export const CREATE_PERSON = gql`
-  mutation createPerson(
-    $name: String!
-    $street: String!
-    $city: String!
-    $phone: String
-  ) {
-    addPerson(name: $name, street: $street, city: $city, phone: $phone) {
+export const FIND_PERSON = gql`
+  query findPersonByName($nameToSearch: String!) {
+    findPerson(name: $nameToSearch) {
       name
       phone
       id
@@ -52,6 +53,14 @@ export const EDIT_NUMBER = gql`
         city
       }
       id
+    }
+  }
+`
+
+export const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
     }
   }
 `
