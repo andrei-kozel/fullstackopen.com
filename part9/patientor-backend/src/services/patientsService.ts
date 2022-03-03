@@ -13,4 +13,9 @@ const getNonSsnPatients = (): Array<NonSsnPatient> => {
   }))
 }
 
-export default { getPatients, getNonSsnPatients };
+const addPatient = (newPatient: Patient): Patient => {
+  patients.push(newPatient)
+  return newPatient;
+}
+
+export default { getPatients, getNonSsnPatients, addPatient };
