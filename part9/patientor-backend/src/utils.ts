@@ -60,11 +60,12 @@ const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
 
-const parseGender = (gender: unknown): Gender => {
-  if (!gender || !isGender(Gender)) {
-    throw new Error('Incorrect or missing gender: ' + gender);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseGender = (gender: any): Gender => {
+  if (!gender || !isString(gender) || !isGender(gender.toLowerCase())) {
+    throw new Error(`Incorrect or missing gender: ${gender || ""}`);
   }
-  return gender;
+  return gender.toLowerCase() as Gender;
 };
 
 const isString = (text: unknown): text is string => {
